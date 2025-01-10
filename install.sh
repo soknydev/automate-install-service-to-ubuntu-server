@@ -5,7 +5,7 @@ set -e
 
 # Source the installation script
 source ./scripts/install/script.sh
-source ./scripts/install/install.docker.sh
+#source ./scripts/install/install.docker.sh
 
 # Function to display the menu
 display_menu() {
@@ -26,7 +26,7 @@ while true; do
   read -p "Please choose an option: " choice
 
   case $choice in
-    1) check_docker ;;
+    1) install_docker ;;
     2) install_docker_compose ;;
     3) install_nginx ;;
     4) install_github_cli ;;
