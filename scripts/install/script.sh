@@ -6,6 +6,17 @@ set -e
 # Function to install Docker
 install_docker() {
   echo "Installing Docker..."
+
+  # Resolve interrupted dpkg state
+  if [ -f /var/lib/dpkg/lock-frontend ] || [ -f /var/lib/dpkg/lock ]; then
+    echo "Clearing dpkg locks..."
+    sudo rm -f /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock
+  fi
+
+  echo "Configuring interrupted dpkg packages..."
+  sudo dpkg --configure -a
+
+  # Continue with installation
   sudo apt update -y
   sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
@@ -15,7 +26,9 @@ install_docker() {
   sudo systemctl start docker
   sudo systemctl enable docker
   echo "Docker installed successfully!"
+  docker --version
 }
+
 
 # Function to install Docker Compose
 install_docker_compose() {
@@ -25,6 +38,7 @@ install_docker_compose() {
   sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
   sudo chmod +x /usr/local/bin/docker-compose
   echo "Docker Compose installed successfully!"
+  docker-compose --version
 }
 
 # Function to install Nginx
@@ -35,6 +49,7 @@ install_nginx() {
   sudo systemctl start nginx
   sudo systemctl enable nginx
   echo "Nginx installed successfully!"
+  nginx -v
 }
 
 # Function to install GitHub CLI
@@ -47,6 +62,7 @@ install_github_cli() {
   sudo apt update -y
   sudo apt install -y gh
   echo "GitHub CLI installed successfully!"
+  gh --version
 }
 
 # Function to install Jenkins
@@ -61,6 +77,7 @@ install_jenkins() {
   sudo systemctl start jenkins
   sudo systemctl enable jenkins
   echo "Jenkins installed successfully!"
+  jenkins --version
 }
 
 # Function to install Ansible
@@ -71,4 +88,5 @@ install_ansible() {
   sudo add-apt-repository --yes --update ppa:ansible/ansible
   sudo apt install -y ansible
   echo "Ansible installed successfully!"
+  ansible --version
 }
